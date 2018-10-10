@@ -1,0 +1,23 @@
+//  Copyright (c) 2018 Gonzalo Müller Bravo.
+//  Licensed under the MIT License (MIT), see LICENSE.txt
+repositories {
+  maven {
+    url 'https://plugins.gradle.org/m2/'
+  }
+}
+
+dependencies {
+  compile 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
+  compile 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:+'
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['../src/main/groovy']
+        }
+        resources {
+            srcDirs = ['../src/main/resources']
+        }
+    }
+}

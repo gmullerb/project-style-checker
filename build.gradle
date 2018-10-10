@@ -1,0 +1,66 @@
+//  Copyright (c) 2018 Gonzalo Müller Bravo.
+//  Licensed under the MIT License (MIT), see LICENSE.txt
+
+plugins {
+  id 'com.gradle.plugin-publish' version '0.10.0'
+  id 'groovy'
+  id 'jacoco'
+}
+
+repositories {
+  jcenter()
+  maven {
+    url 'https://plugins.gradle.org/m2/'
+  }
+}
+
+dependencies {
+  compile gradleApi()
+  compile 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
+  compile 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:+'
+  testCompile gradleTestKit()
+  testCompile 'org.junit.jupiter:junit-jupiter-api:+'
+  testCompile 'org.mockito:mockito-core:+'
+  testRuntime 'org.junit.jupiter:junit-jupiter-engine:+'
+}
+
+final PLUGIN_SITE = 'https://github.com/gmullerb/project-style-checker/'
+
+apply plugin: 'all.shared.gradle.project-style-checker'
+
+// Plugin settings
+//////////////////
+
+pluginBundle {
+  website = PLUGIN_SITE
+  vcsUrl = PLUGIN_SITE
+  description = 'A small set of tasks for checking file style for all files and for checking code style of Gradle\'s code'
+  tags = ['base-style-config', 'base-style-config-wrapper', 'file style', 'code style', 'coding style', 'coding standards',
+    'best practices', 'checkstyle', 'codenarc', 'groovy', 'gradle code', 'build code', 'tabulation checking', 'end of file checking',
+    'tab character']
+  plugins {
+    thePlugin {
+      id = project.hasProperty('PLUGIN_ID') ? property('PLUGIN_ID') : 'Set plugin id'
+      displayName = 'Project Style Checker plugin'
+    }
+  }
+}
+
+// Task settings
+////////////////
+
+assemble {
+  dependsOn += ['assessCommon', 'assessGradle', 'codenarcMain', 'codenarcTest']
+}
+
+test {
+  // Test task settings
+  useJUnitPlatform()
+  // gradle task settings
+  finalizedBy jacocoTestReport, jacocoTestCoverageVerification
+}
+
+// Default task
+///////////////
+
+defaultTasks 'build'
