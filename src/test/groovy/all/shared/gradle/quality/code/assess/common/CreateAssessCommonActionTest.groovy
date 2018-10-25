@@ -3,7 +3,7 @@
 package all.shared.gradle.quality.code.assess.common
 
 import all.shared.gradle.quality.code.assess.AssessTaskConfig
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -19,13 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 @CompileStatic
 class CreateAssessCommonActionTest {
   private final AssessTaskConfig config = new AssessTaskConfig()
-  private final Project testProject = SpyProjectBuilder.builder.build()
+  private final Project testProject = SpyProjectFactory.builder.build()
   private final Checkstyle task = testProject.tasks.create('testCheckstyle', Checkstyle)
   private final CreateAssessCommonAction action = new CreateAssessCommonAction(config)
 
   @Test
   void shouldExecuteAction() {
-    final boolean isEmpty = !new File(testProject.projectDir.path, 'createAssessCommonActionTest').createNewFile()
+    final boolean isEmpty = !new File(testProject.projectDir.path, 'createAssessCommonActionTest')
+      .createNewFile()
 
     action.execute(task)
 
@@ -40,7 +41,8 @@ class CreateAssessCommonActionTest {
   void shouldExecuteActionWithDummyFolder() {
     final File dummyDir = new File(testProject.projectDir.path, 'dummy')
     dummyDir.mkdir()
-    new File(dummyDir, 'createAssessCommonActionTest').createNewFile()
+    new File(dummyDir, 'createAssessCommonActionTest')
+      .createNewFile()
 
     action.execute(task)
 

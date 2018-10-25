@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](/LICENSE.txt) [![Download](https://api.bintray.com/packages/gmullerb/all.shared.gradle/project-style-checker/images/download.svg)](https://bintray.com/gmullerb/all.shared.gradle/project-style-checker/_latestVersion)
 
-**This project offers a small set of Gradle's tasks for checking file style for all files and for checking code style of Gradle's code**
+**This project offers a small set of Gradle's tasks for checking file style for all files and for checking code style of Gradle's code**.
 
 This project is licensed under the terms of the [MIT license](/LICENSE.txt).
 
@@ -219,5 +219,14 @@ Don't forget:
 
 * **Love what you do**.
 * **Learn everyday**.
+* **Learn yourself**.
 * **Share your knowledge**.
 * **Learn from the past, dream on the future, live and enjoy the present to the max!**.
+
+At life:
+
+* Let's act, not complain.
+
+At work:
+
+* Let's give solutions, not questions.

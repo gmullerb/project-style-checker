@@ -2,7 +2,7 @@
 //  Licensed under the MIT License (MIT), see LICENSE.txt
 package all.shared.gradle.quality.code
 
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify
 
 @CompileStatic
 class ProjectStyleCheckerPluginTest {
-  private final Project spyProject = SpyProjectBuilder.build()
+  private final Project spyProject = SpyProjectFactory.build()
 
   @Test
   void shouldComplement() {
@@ -44,10 +44,14 @@ class ProjectStyleCheckerPluginTest {
     final boolean result = ProjectStyleCheckerPlugin.complement(mockProjectStyleChecker)
 
     assertTrue(result)
-    order.verify(mockProjectStyleChecker).addRequiredPlugins()
-    order.verify(mockProjectStyleChecker).fillAllExtensions(any(ProjectStyleCheckerExtension))
-    order.verify(mockProjectStyleChecker).addTasks(any(ProjectStyleCheckerExtension))
-    verify(spyProject.logger).debug(eq('Added project-style-check extension'))
+    order.verify(mockProjectStyleChecker)
+      .addRequiredPlugins()
+    order.verify(mockProjectStyleChecker)
+      .fillAllExtensions(any(ProjectStyleCheckerExtension))
+    order.verify(mockProjectStyleChecker)
+      .addTasks(any(ProjectStyleCheckerExtension))
+    verify(spyProject.logger)
+      .debug(eq('Added project-style-check extension'))
   }
 
   @Test
@@ -58,10 +62,14 @@ class ProjectStyleCheckerPluginTest {
     final boolean result = ProjectStyleCheckerPlugin.complement(spyProjectStyleChecker)
 
     assertFalse(result)
-    verify(spyProjectStyleChecker, never()).addRequiredPlugins()
-    verify(spyProjectStyleChecker, never()).fillAllExtensions(any(ProjectStyleCheckerExtension))
-    verify(spyProjectStyleChecker, never()).addTasks(any(ProjectStyleCheckerExtension))
-    verify(spyProject.logger).error(eq('Couldn\'t add project-style-check extension'))
+    verify(spyProjectStyleChecker, never())
+      .addRequiredPlugins()
+    verify(spyProjectStyleChecker, never())
+      .fillAllExtensions(any(ProjectStyleCheckerExtension))
+    verify(spyProjectStyleChecker, never())
+      .addTasks(any(ProjectStyleCheckerExtension))
+    verify(spyProject.logger)
+      .error(eq('Couldn\'t add project-style-check extension'))
   }
 
   @Test
@@ -71,6 +79,7 @@ class ProjectStyleCheckerPluginTest {
 
     plugin.apply(spyProject)
 
-    verify(spyProject.logger).error(eq('Couldn\'t add project-style-check extension'))
+    verify(spyProject.logger)
+      .error(eq('Couldn\'t add project-style-check extension'))
   }
 }

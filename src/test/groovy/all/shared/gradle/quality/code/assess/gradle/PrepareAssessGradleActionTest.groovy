@@ -3,7 +3,7 @@
 package all.shared.gradle.quality.code.assess.gradle
 
 import all.shared.gradle.quality.code.assess.AssessTaskConfig
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -38,7 +38,8 @@ class PrepareAssessGradleActionTest {
   private final TextResource mockCodenarcConfig = mock(TextResource)
   private final AssessTaskConfig setting = new AssessTaskConfig()
   private final FileTree mockFileTree = mock(FileTree)
-  private final CodeNarc spyTask = spy(SpyProjectBuilder.builder.build().tasks.create('testCodeNarc', CodeNarc))
+  private final CodeNarc spyTask = spy(SpyProjectFactory.builder.build()
+    .tasks.create('testCodeNarc', CodeNarc))
   private final Logger mockLogger = mock(Logger)
   private final PrepareAssessGradleAction action = new PrepareAssessGradleAction(setting)
 
@@ -61,8 +62,10 @@ class PrepareAssessGradleActionTest {
     action.execute(spyTask)
 
     assertEquals(mockCodenarcConfig, spyTask.config)
-    verify(spyTask).setSource(eq(mockFiles))
-    verify(mockLogger, never()).debug(anyString())
+    verify(spyTask)
+      .setSource(eq(mockFiles))
+    verify(mockLogger, never())
+      .debug(anyString())
   }
 
   @Test
@@ -70,7 +73,8 @@ class PrepareAssessGradleActionTest {
     action.execute(spyTask)
 
     assertNull(spyTask.config)
-    verify(spyTask, never()).setSource(eq(mockFileTree))
+    verify(spyTask, never())
+      .setSource(eq(mockFileTree))
   }
 
   @Test
@@ -79,7 +83,8 @@ class PrepareAssessGradleActionTest {
 
     action.execute(spyTask)
 
-    verify(mockFileTree).filter((Closure<File>) argThat { Closure<File> closure ->
+    verify(mockFileTree)
+      .filter((Closure<File>) argThat { Closure<File> closure ->
       final File mockFile = mock(File)
       assertAll([
       {
@@ -142,6 +147,7 @@ class PrepareAssessGradleActionTest {
 
     action.execute(spyTask)
 
-    verify(mockFileTree).visit(any(Closure))
+    verify(mockFileTree)
+      .visit(any(Closure))
   }
 }

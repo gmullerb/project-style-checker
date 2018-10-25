@@ -2,7 +2,7 @@
 //  Licensed under the MIT License (MIT), see LICENSE.txt
 package all.shared.gradle.quality.code.assess.gradle
 
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify
 
 @CompileStatic
 class LogCodeNarcReportActionTest {
-  private final Project spyProject = SpyProjectBuilder.build()
+  private final Project spyProject = SpyProjectFactory.build()
   private final CodeNarc spyTaskToReport = spy((CodeNarc) spyProject.tasks.create('testCodeNarc', CodeNarc))
   private final Task mockTask = mock(Task)
   private final Logger mockLogger = mock(Logger)
@@ -78,8 +78,10 @@ class LogCodeNarcReportActionTest {
     assertEquals(1, logReportTask.actions.size())
     assertEquals('Report', logReportTask.group)
     assertEquals('Logs report for testCodeNarc task', logReportTask.description)
-    verify(mockReport).setEnabled(eq(true))
-    verify(mockLogger).debug(eq('Added {} task'), eq('someLogReportTask'))
+    verify(mockReport)
+      .setEnabled(eq(true))
+    verify(mockLogger)
+      .debug(eq('Added {} task'), eq('someLogReportTask'))
   }
 
   @Test
@@ -89,8 +91,10 @@ class LogCodeNarcReportActionTest {
     final boolean result = LogCodeNarcReportAction.addLogReportTask('someLogReportTask', spyTaskToReport)
 
     assertFalse(result)
-    verify(mockReport, never()).setEnabled(any(Boolean))
-    verify(mockLogger).debug(eq('There is already a {} task defined, it not possible to log report'), eq('someLogReportTask'))
+    verify(mockReport, never())
+      .setEnabled(any(Boolean))
+    verify(mockLogger)
+      .debug(eq('There is already a {} task defined, it not possible to log report'), eq('someLogReportTask'))
   }
 
   @Test
@@ -104,9 +108,12 @@ class LogCodeNarcReportActionTest {
 
     action.execute(mockTask)
 
-    verify(mockLogger).debug(eq('Logging CodeNarc report'))
-    verify(mockLogger).quiet(eq('Violation:text'))
-    verify(mockLogger, never()).error(anyString(), any())
+    verify(mockLogger)
+      .debug(eq('Logging CodeNarc report'))
+    verify(mockLogger)
+      .quiet(eq('Violation:text'))
+    verify(mockLogger, never())
+      .error(anyString(), any())
   }
 
   @Test
@@ -122,9 +129,12 @@ class LogCodeNarcReportActionTest {
 
     action.execute(mockTask)
 
-    verify(mockLogger).error(eq('Enable text report for {} task to be able to log report: "reports.text.enabled = true"'), eq(spyTaskToReport))
-    verify(mockLogger, never()).debug(anyString())
-    verify(mockLogger, never()).quiet(anyString())
+    verify(mockLogger)
+      .error(eq('Enable text report for {} task to be able to log report: "reports.text.enabled = true"'), eq(spyTaskToReport))
+    verify(mockLogger, never())
+      .debug(anyString())
+    verify(mockLogger, never())
+      .quiet(anyString())
   }
 
   @Test
@@ -140,10 +150,15 @@ class LogCodeNarcReportActionTest {
     action.execute(mockTask)
 
     final InOrder orderedMock = inOrder(mockLogger)
-    orderedMock.verify(mockLogger).quiet(eq('File:text0'))
-    orderedMock.verify(mockLogger).quiet(eq('Violation:text1'))
-    orderedMock.verify(mockLogger).quiet(eq(' Violation:text2'))
-    orderedMock.verify(mockLogger).quiet(eq('Violation:text4'))
-    orderedMock.verify(mockLogger, never()).quiet(anyString())
+    orderedMock.verify(mockLogger)
+      .quiet(eq('File:text0'))
+    orderedMock.verify(mockLogger)
+      .quiet(eq('Violation:text1'))
+    orderedMock.verify(mockLogger)
+      .quiet(eq(' Violation:text2'))
+    orderedMock.verify(mockLogger)
+      .quiet(eq('Violation:text4'))
+    orderedMock.verify(mockLogger, never())
+      .quiet(anyString())
   }
 }

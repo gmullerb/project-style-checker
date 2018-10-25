@@ -7,7 +7,7 @@ import all.shared.gradle.file.FileListerPlugin
 import all.shared.gradle.quality.code.assess.common.CreateAssessCommonAction
 import all.shared.gradle.quality.code.assess.gradle.CreateAssessGradleAction
 import all.shared.gradle.quality.code.config.CommonCodeStyleConfig
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify
 
 @CompileStatic
 class ProjectStyleCheckerTest {
-  private final Project spyProject = SpyProjectBuilder.build()
+  private final Project spyProject = SpyProjectFactory.build()
   private final ProjectStyleChecker projectStyleChecker = new ProjectStyleChecker(spyProject)
 
   @Test
@@ -65,10 +65,14 @@ class ProjectStyleCheckerTest {
   void shouldAddRequiredPlugins() {
     projectStyleChecker.addRequiredPlugins()
 
-    verify(spyProject.logger).debug(eq('project-style-check extension applied {} plugin'), eq(BaseStyleConfigWrapperPlugin))
-    verify(spyProject.logger).debug(eq('project-style-check extension applied {} plugin'), eq(FileListerPlugin))
-    verify(spyProject.logger).debug(eq('project-style-check extension applied {} plugin'), eq(CheckstylePlugin))
-    verify(spyProject.logger).debug(eq('project-style-check extension applied {} plugin'), eq(CodeNarcPlugin))
+    verify(spyProject.logger)
+      .debug(eq('project-style-check extension applied {} plugin'), eq(BaseStyleConfigWrapperPlugin))
+    verify(spyProject.logger)
+      .debug(eq('project-style-check extension applied {} plugin'), eq(FileListerPlugin))
+    verify(spyProject.logger)
+      .debug(eq('project-style-check extension applied {} plugin'), eq(CheckstylePlugin))
+    verify(spyProject.logger)
+      .debug(eq('project-style-check extension applied {} plugin'), eq(CodeNarcPlugin))
   }
 
   @Test
@@ -80,7 +84,8 @@ class ProjectStyleCheckerTest {
 
     projectStyleChecker.addRequiredPlugins()
 
-    verify(spyProject.logger, never()).debug(eq('project-style-check extension applied {} plugin'), any(Class))
+    verify(spyProject.logger, never())
+      .debug(eq('project-style-check extension applied {} plugin'), any(Class))
   }
 
   @Test
@@ -105,7 +110,8 @@ class ProjectStyleCheckerTest {
 
     assertEquals(mockCheckstyleConfig, config.common.config)
     assertEquals(mockCodenarcConfig, config.gradle.config)
-    verify(spyProject.logger).debug(eq('project-style-check extension filled with {}'), eq(BaseStyleConfigWrapperPlugin.EXTENSION_NAME))
+    verify(spyProject.logger)
+      .debug(eq('project-style-check extension filled with {}'), eq(BaseStyleConfigWrapperPlugin.EXTENSION_NAME))
   }
 
   @Test
@@ -133,26 +139,29 @@ class ProjectStyleCheckerTest {
 
     assertEquals(mockFileTree, config.common.fileTree)
     assertEquals(mockFileTree, config.gradle.fileTree)
-    verify(spyProject.logger).debug(eq('project-style-check extension filled with {}'), eq(FileListerPlugin.EXTENSION_NAME))
+    verify(spyProject.logger)
+      .debug(eq('project-style-check extension filled with {}'), eq(FileListerPlugin.EXTENSION_NAME))
   }
 
   @Test
   void shouldEstablishCheckstyleVersion() {
     spyProject.extensions.add(ProjectStyleChecker.CHECKSTYLE_VERSION_PROPERTY, '1.0')
-    final CheckstyleExtension extension =  new CheckstyleExtension(spyProject)
+    final CheckstyleExtension extension = new CheckstyleExtension(spyProject)
     spyProject.extensions.add('checkstyle', extension)
 
     projectStyleChecker.establishCheckstyleVersion()
 
     assertEquals('1.0', extension.toolVersion)
-    verify(spyProject.logger).debug(eq('Set checkstyle to {} version'), eq('1.0'))
+    verify(spyProject.logger)
+      .debug(eq('Set checkstyle to {} version'), eq('1.0'))
   }
 
   @Test
   void shouldNotEstablishCheckstyleVersion() {
     projectStyleChecker.establishCheckstyleVersion()
 
-    verify(spyProject.logger, never()).debug(anyString(), anyString())
+    verify(spyProject.logger, never())
+      .debug(anyString(), anyString())
   }
 
   @Test
@@ -168,7 +177,8 @@ class ProjectStyleCheckerTest {
 
     assertEquals('1.0', extension.toolVersion)
     assertEquals(mockCodenarcConfig, extension.config)
-    verify(spyProject.logger).debug(eq('Set codenarc to {} version'), eq('1.0'))
+    verify(spyProject.logger)
+      .debug(eq('Set codenarc to {} version'), eq('1.0'))
   }
 
   @Test
@@ -182,7 +192,8 @@ class ProjectStyleCheckerTest {
     projectStyleChecker.establishCodenarcSettings(config)
 
     assertEquals(mockCodenarcConfig, extension.config)
-    verify(spyProject.logger, never()).debug(anyString(), anyString())
+    verify(spyProject.logger, never())
+      .debug(anyString(), anyString())
   }
 
   @Test
@@ -204,10 +215,14 @@ class ProjectStyleCheckerTest {
 
     spyProjectStyleChecker.fillAllExtensions(new ProjectStyleCheckerExtension())
 
-    order.verify(spyProjectStyleChecker).fillExtensionConfigs(any(ProjectStyleCheckerExtension))
-    order.verify(spyProjectStyleChecker).fillExtensionFileTree(any(ProjectStyleCheckerExtension))
-    order.verify(spyProjectStyleChecker).establishCheckstyleVersion()
-    order.verify(spyProjectStyleChecker).establishCodenarcSettings(any(ProjectStyleCheckerExtension))
+    order.verify(spyProjectStyleChecker)
+      .fillExtensionConfigs(any(ProjectStyleCheckerExtension))
+    order.verify(spyProjectStyleChecker)
+      .fillExtensionFileTree(any(ProjectStyleCheckerExtension))
+    order.verify(spyProjectStyleChecker)
+      .establishCheckstyleVersion()
+    order.verify(spyProjectStyleChecker)
+      .establishCodenarcSettings(any(ProjectStyleCheckerExtension))
   }
 
   @Test
@@ -222,8 +237,10 @@ class ProjectStyleCheckerTest {
     assertNotNull(spyProject.tasks.findByPath(":$CreateAssessGradleAction.LOG_REPORT_TASK"))
     assertNotNull(spyProject.tasks.findByPath(":$ProjectStyleChecker.LOG_CODENARC_MAIN_REPORT_TASK"))
     assertNotNull(spyProject.tasks.findByPath(":$ProjectStyleChecker.LOG_CODENARC_TEST_REPORT_TASK"))
-    verify(spyProject.logger).debug(eq('Added {} task'), eq(CreateAssessCommonAction.ASSESS_TASK_DEFINITION.name))
-    verify(spyProject.logger).debug(eq('Added {} task'), eq(CreateAssessGradleAction.ASSESS_TASK_DEFINITION.name))
+    verify(spyProject.logger)
+      .debug(eq('Added {} task'), eq(CreateAssessCommonAction.ASSESS_TASK_DEFINITION.name))
+    verify(spyProject.logger)
+      .debug(eq('Added {} task'), eq(CreateAssessGradleAction.ASSESS_TASK_DEFINITION.name))
   }
 
   @Test

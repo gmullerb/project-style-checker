@@ -3,7 +3,7 @@
 package all.shared.gradle.quality.code.assess.gradle
 
 import all.shared.gradle.quality.code.assess.AssessTaskConfig
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -18,11 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals
 class CreateAssessGradleActionTest {
   @Test
   void shouldExecuteAction() {
-    final Project testProject = SpyProjectBuilder.builder.build()
+    final Project testProject = SpyProjectFactory.builder.build()
     final AssessTaskConfig config = new AssessTaskConfig()
     final CodeNarc task = testProject.tasks.create('testCodeNarc', CodeNarc)
     final CreateAssessGradleAction action = new CreateAssessGradleAction(config)
-    final boolean isEmpty = !new File(testProject.projectDir.path, 'createAssessGradleActionTest').createNewFile()
+    final boolean isEmpty = !new File(testProject.projectDir.path, 'createAssessGradleActionTest')
+      .createNewFile()
 
     action.execute(task)
 

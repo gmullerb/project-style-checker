@@ -3,7 +3,7 @@
 package all.shared.gradle.quality.code.assess.common
 
 import all.shared.gradle.quality.code.assess.AssessTaskConfig
-import all.shared.gradle.testfixtures.SpyProjectBuilder
+import all.shared.gradle.testfixtures.SpyProjectFactory
 
 import groovy.transform.CompileStatic
 
@@ -32,7 +32,8 @@ class PrepareAssessCommonActionTest {
   private final TextResource mockCommonConfig = mock(TextResource)
   private final AssessTaskConfig setting = new AssessTaskConfig()
   private final FileTree mockFileTree = mock(FileTree)
-  private final Checkstyle spyTask = spy(SpyProjectBuilder.builder.build().tasks.create('testCheckstyle', Checkstyle))
+  private final Checkstyle spyTask = spy(SpyProjectFactory.builder.build()
+    .tasks.create('testCheckstyle', Checkstyle))
   private final Logger mockLogger = mock(Logger)
   private final PrepareAssessCommonAction action = new PrepareAssessCommonAction(setting)
 
@@ -51,8 +52,10 @@ class PrepareAssessCommonActionTest {
     action.execute(spyTask)
 
     assertEquals(mockCommonConfig, spyTask.config)
-    verify(spyTask).setSource(eq(mockFileTree))
-    verify(mockLogger, never()).debug(anyString())
+    verify(spyTask)
+      .setSource(eq(mockFileTree))
+    verify(mockLogger, never())
+      .debug(anyString())
   }
 
   @Test
@@ -60,7 +63,8 @@ class PrepareAssessCommonActionTest {
     action.execute(spyTask)
 
     assertNull(spyTask.config)
-    verify(spyTask, never()).setSource(eq(mockFileTree))
+    verify(spyTask, never())
+      .setSource(eq(mockFileTree))
   }
 
   @Test
@@ -74,7 +78,8 @@ class PrepareAssessCommonActionTest {
 
     action.execute(spyTask)
 
-    verify(mockFileTree).visit(any(Closure))
+    verify(mockFileTree)
+      .visit(any(Closure))
   }
 
 }

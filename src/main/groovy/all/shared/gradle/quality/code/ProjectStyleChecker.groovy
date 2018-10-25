@@ -93,7 +93,8 @@ class ProjectStyleChecker {
 
   void fillExtensionFileTree(final ProjectStyleCheckerExtension config) {
     config.common.fileTree = config.gradle.fileTree = ((FileListerExtension) project.extensions
-      .findByName(FileListerPlugin.EXTENSION_NAME)).obtainPartialFileTree()
+      .findByName(FileListerPlugin.EXTENSION_NAME))
+      .obtainPartialFileTree()
     project.logger.debug('project-style-check extension filled with {}', FileListerPlugin.EXTENSION_NAME)
   }
 
