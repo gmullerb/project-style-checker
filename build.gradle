@@ -2,6 +2,8 @@
 //  Licensed under the MIT License (MIT), see LICENSE.txt
 
 plugins {
+  id 'all.shared.gradle.project-style-checker'
+  id 'com.github.ksoichiro.console.reporter' version '0.6.2'
   id 'com.gradle.plugin-publish' version '0.10.0'
   id 'groovy'
   id 'jacoco'
@@ -18,17 +20,15 @@ repositories {
 }
 
 dependencies {
-  compile gradleApi()
-  compile 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
-  compile 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:+'
-  testCompile 'all.shared.gradle:spy-project-factory:+'
-  testCompile 'org.junit.jupiter:junit-jupiter-api:+'
+  implementation gradleApi()
+  implementation 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
+  implementation 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:1.0.2'
+  testImplementation 'all.shared.gradle:spy-project-factory:+'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:+'
   testRuntime 'org.junit.jupiter:junit-jupiter-engine:+'
 }
 
 final PLUGIN_SITE = 'https://github.com/gmullerb/project-style-checker/'
-
-apply plugin: 'all.shared.gradle.project-style-checker'
 
 // Plugin settings
 //////////////////
@@ -50,21 +50,80 @@ pluginBundle {
   }
 }
 
+consoleReporter {
+  jacoco {
+    autoconfigureCoverageConfig false
+  }
+}
+
+// Task assess
+////////////////
+
+task assess {
+  group = 'Assessment'
+  dependsOn = ['codenarcMain', 'codenarcTest']
+}
+
 // Task settings
 ////////////////
 
-assemble {
-  dependsOn += ['assessCommon', 'assessGradle', 'codenarcMain', 'codenarcTest']
+check {
+  dependsOn += ['assess']
 }
 
 test {
   // Test task settings
   useJUnitPlatform()
   // gradle task settings
-  finalizedBy jacocoTestReport, jacocoTestCoverageVerification
+  finalizedBy reportCoverage
+}
+
+jacocoTestReport {
+  doFirst {
+    classDirectories.from = files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: '**/*_closure*')
+    })
+  }
+
+  reports {
+    xml.enabled true
+  }
+}
+
+jacocoTestCoverageVerification {
+  // jacocoTestCoverageVerification task settings
+  doFirst {
+    classDirectories.from = files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: '**/*_closure*')
+    })
+  }
+  violationRules {
+    rule {
+      element = 'BUNDLE'
+      limit {
+        counter = 'BRANCH'
+        value = 'COVEREDRATIO'
+        minimum = 0.95
+      }
+    }
+    rule {
+      element = 'BUNDLE'
+      limit {
+        counter = 'INSTRUCTION'
+        value = 'COVEREDRATIO'
+        minimum = 0.85
+      }
+    }
+  }
+  // gradle task settings
+  shouldRunAfter jacocoTestReport, reportCoverage
+}
+
+reportCoverage {
+  dependsOn jacocoTestReport
 }
 
 // Default task
 ///////////////
 
-defaultTasks 'build'
+defaultTasks 'assessCommon', 'assessGradle', 'build'

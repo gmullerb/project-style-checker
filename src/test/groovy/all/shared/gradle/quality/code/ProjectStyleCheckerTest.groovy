@@ -91,18 +91,12 @@ class ProjectStyleCheckerTest {
   @Test
   void shouldFillExtensionConfigs() {
     final BaseStyleConfigWrapperExtension mockBackStyleConfig = mock(BaseStyleConfigWrapperExtension)
-    final CommonCodeStyleConfig mockCommonConfig = mock(CommonCodeStyleConfig)
-    doReturn(mockCommonConfig)
-      .when(mockBackStyleConfig)
-      .getCommon()
     final TextResource mockCodenarcConfig = mock(TextResource)
-    doReturn(mockCodenarcConfig)
-      .when(mockCommonConfig)
-      .getCodenarcConfig()
     final TextResource mockCheckstyleConfig = mock(TextResource)
-    doReturn(mockCheckstyleConfig)
-      .when(mockCommonConfig)
-      .getCheckstyleConfig()
+    final CommonCodeStyleConfig mockCommonConfig = new CommonCodeStyleConfig(mockCheckstyleConfig, mockCodenarcConfig)
+    final java.lang.reflect.Field injectField = BaseStyleConfigWrapperExtension.getDeclaredField('common')
+    injectField.setAccessible(true)
+    injectField.set(mockBackStyleConfig, mockCommonConfig)
     spyProject.extensions.add(BaseStyleConfigWrapperPlugin.EXTENSION_NAME, mockBackStyleConfig)
     final ProjectStyleCheckerExtension config = new ProjectStyleCheckerExtension()
 
@@ -226,11 +220,29 @@ class ProjectStyleCheckerTest {
   }
 
   @Test
-  void shouldAddTasks() {
+  void shouldAddTasksWhenAlreadyExists() {
     spyProject.tasks.create('codenarcMain', CodeNarc)
     spyProject.tasks.create('codenarcTest', CodeNarc)
 
     projectStyleChecker.addTasks(new ProjectStyleCheckerExtension())
+
+    assertTrue(spyProject.tasks.getByPath(":$CreateAssessCommonAction.ASSESS_TASK_DEFINITION.name") instanceof Checkstyle)
+    assertTrue(spyProject.tasks.getByPath(":$CreateAssessGradleAction.ASSESS_TASK_DEFINITION.name") instanceof CodeNarc)
+    assertNotNull(spyProject.tasks.findByPath(":$CreateAssessGradleAction.LOG_REPORT_TASK"))
+    assertNotNull(spyProject.tasks.findByPath(":$ProjectStyleChecker.LOG_CODENARC_MAIN_REPORT_TASK"))
+    assertNotNull(spyProject.tasks.findByPath(":$ProjectStyleChecker.LOG_CODENARC_TEST_REPORT_TASK"))
+    verify(spyProject.logger)
+      .debug(eq('Added {} task'), eq(CreateAssessCommonAction.ASSESS_TASK_DEFINITION.name))
+    verify(spyProject.logger)
+      .debug(eq('Added {} task'), eq(CreateAssessGradleAction.ASSESS_TASK_DEFINITION.name))
+  }
+
+  @Test
+  void shouldAddTasksWhenAdded() {
+    projectStyleChecker.addTasks(new ProjectStyleCheckerExtension())
+
+    spyProject.tasks.create('codenarcMain', CodeNarc)
+    spyProject.tasks.create('codenarcTest', CodeNarc)
 
     assertTrue(spyProject.tasks.getByPath(":$CreateAssessCommonAction.ASSESS_TASK_DEFINITION.name") instanceof Checkstyle)
     assertTrue(spyProject.tasks.getByPath(":$CreateAssessGradleAction.ASSESS_TASK_DEFINITION.name") instanceof CodeNarc)

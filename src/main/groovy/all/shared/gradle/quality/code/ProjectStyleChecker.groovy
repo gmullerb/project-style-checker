@@ -55,6 +55,13 @@ class ProjectStyleChecker {
     if (task) {
       LogCodeNarcReportAction.addLogReportTask(logReportTaskName, task)
     }
+    else {
+      project.tasks.whenTaskAdded { final Task addedTask ->
+        if (addedTask.name == taskName) {
+          LogCodeNarcReportAction.addLogReportTask(logReportTaskName, (CodeNarc) addedTask)
+        }
+      }
+    }
   }
 
   private void establishCodenarcVersion(final CodeNarcExtension extension) {
