@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](/LICENSE.txt) 
 [![Download](https://api.bintray.com/packages/gmullerb/all.shared.gradle/project-style-checker/images/download.svg)](https://bintray.com/gmullerb/all.shared.gradle/project-style-checker/_latestVersion) 
-[![coverage report](https://gitlab.com/gmullerb/project-style-checker/badges/master/coverage.svg)](https://gitlab.com/gmullerb/project-style-checker/commits/master) 
+[![coverage report](https://gitlab.com/gmullerb/project-style-checker/badges/master/coverage.svg)](https://gitlab.com/gmullerb/project-style-checker/commits/master)
 
 **A Gradle plugin that offers a small set of Gradle's tasks for checking file style for all files and for checking code style of Gradle's build code**.
 
@@ -17,7 +17,7 @@ __________________
 
 ```gradle
  plugins {
-   id 'all.shared.gradle.project-style-checker' version '1.0.3'
+   id 'all.shared.gradle.project-style-checker' version '1.0.4'
  }
 ```
 
@@ -38,7 +38,6 @@ __________________
 * Have a task for checking Gradle's code.
 * Allow to log to console of checking report.
 * Automatically apply all the required plugins.
-* Allow to easily configure versions.
 
 ## Features
 
@@ -61,8 +60,6 @@ __________________
   * [Checkstyle plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html).
   * [CodeNarc plugin](https://docs.gradle.org/current/userguide/codenarc_plugin.html).
 
-* Sets CodeNarc configuration to point to [Base Style Configuration](https://github.com/gmullerb/base-style-config).
-
 * Allows to indicate the version of:
   * [Base Style Configuration](https://github.com/gmullerb/base-style-config).
   * [Checkstyle](http://checkstyle.sourceforge.net).
@@ -84,7 +81,7 @@ __________________
 
 ```gradle
  plugins {
-   id 'all.shared.gradle.project-style-checker' version '1.0.3'
+   id 'all.shared.gradle.project-style-checker' version '1.0.4'
  }
 ```
 
@@ -121,10 +118,12 @@ E.G.:
 
 > [1] **All these values are filled by default with values obtain from [Base Style Configuration Wrapper plugin](https://github.com/gmullerb/base-style-config-wrapper) and [File Lister plugin ](https://github.com/gmullerb/file-lister)**
 
-#### Convention over Configuration [Optional]
+#### Code Quality Tools Configuration [Optional]
+
+The following processes are inherited/done by the [Base Style Configuration Wrapper plugin](https://github.com/gmullerb/base-style-config-wrapper):
 
 3 . Use `BASE_STYLE_CONFIG_VERSION` to establish the version of [Base Style Configuration](https://github.com/gmullerb/base-style-config) to be used:
-  
+
 * If not set, then last version will be used.
 
 [`gradle.properties`](gradle.properties):
@@ -134,10 +133,10 @@ E.G.:
 ```
 
 4 . Use `CHECKSTYLE_VERSION` to establish the version of [Checkstyle](http://checkstyle.sourceforge.net) to be used:
-  
+
 * Use to check all files.
 * If not set, Gradle's default version will be used.
-  * At the present, should be set in order to be compatible with the set of rules defined by [Base Style Configuration](https://github.com/gmullerb/base-style-config)
+  * But, should be set in order to be compatible with the selected, `BASE_STYLE_CONFIG_VERSION`, i.e. with the selected set of rules defined by [Base Style Configuration](https://github.com/gmullerb/base-style-config).
 
 [`gradle.properties`](gradle.properties):
 
@@ -149,15 +148,13 @@ E.G.:
 
 * Use to check Gradle files.
 * If not set, Gradle's default version will be used.
-  * At the present, should be set in order to be compatible with the set of rules defined by [Base Style Configuration](https://github.com/gmullerb/base-style-config)
+  * But, should be set in order to be compatible with the selected, `BASE_STYLE_CONFIG_VERSION`, i.e. with the selected set of rules defined by [Base Style Configuration](https://github.com/gmullerb/base-style-config).
 
 [`gradle.properties`](gradle.properties):
 
 ```properties
  CODENARC_VERSION=1.3
 ```
-
-> [1] This is inherited/done by the [Base Style Configuration Wrapper plugin](https://github.com/gmullerb/base-style-config-wrapper).
 
 ### Assessing files
 

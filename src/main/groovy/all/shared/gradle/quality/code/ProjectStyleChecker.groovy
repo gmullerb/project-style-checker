@@ -15,7 +15,6 @@ import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.CheckstylePlugin
 import org.gradle.api.plugins.quality.CodeNarc
 import org.gradle.api.plugins.quality.CodeNarcExtension
@@ -23,8 +22,6 @@ import org.gradle.api.plugins.quality.CodeNarcPlugin
 
 @CompileStatic
 class ProjectStyleChecker {
-  public static final String CHECKSTYLE_VERSION_PROPERTY = 'CHECKSTYLE_VERSION'
-  public static final String CODENARC_VERSION_PROPERTY = 'CODENARC_VERSION'
   public static final String LOG_CODENARC_MAIN_REPORT_TASK = 'logForCodeNarcMain'
   public static final String LOG_CODENARC_TEST_REPORT_TASK = 'logForCodeNarcTest'
 
@@ -64,14 +61,6 @@ class ProjectStyleChecker {
     }
   }
 
-  private void establishCodenarcVersion(final CodeNarcExtension extension) {
-    final String codenarcVersion = project.findProperty(CODENARC_VERSION_PROPERTY)
-    if (codenarcVersion) {
-      extension.toolVersion = codenarcVersion
-      project.logger.debug('Set codenarc to {} version', codenarcVersion)
-    }
-  }
-
   private void establishCodenarcConfig(final CodeNarcExtension extension, final ProjectStyleCheckerExtension config) {
     extension.config = config.gradle.config
     project.logger.debug('Set codenarc config filled with projectStyleChecker')
@@ -94,7 +83,7 @@ class ProjectStyleChecker {
     final BaseStyleConfigWrapperExtension baseStyleConfig = (BaseStyleConfigWrapperExtension) project.extensions
       .findByName(BaseStyleConfigWrapperPlugin.EXTENSION_NAME)
     config.common.config = baseStyleConfig.common.checkstyleConfig
-    config.gradle.config = baseStyleConfig.common.codenarcConfig
+    config.gradle.config = baseStyleConfig.back.codenarcConfig
     project.logger.debug('project-style-check extension filled with {}', BaseStyleConfigWrapperPlugin.EXTENSION_NAME)
   }
 
@@ -105,29 +94,19 @@ class ProjectStyleChecker {
     project.logger.debug('project-style-check extension filled with {}', FileListerPlugin.EXTENSION_NAME)
   }
 
-  void establishCheckstyleVersion() {
-    final String checktyleVersion = project.findProperty(CHECKSTYLE_VERSION_PROPERTY)
-    if (checktyleVersion) {
-      ((CheckstyleExtension) project.extensions.findByName('checkstyle')).toolVersion = checktyleVersion
-      project.logger.debug('Set checkstyle to {} version', checktyleVersion)
-    }
-  }
-
   void establishCodenarcSettings(final ProjectStyleCheckerExtension config) {
     final CodeNarcExtension extension = (CodeNarcExtension) project.extensions.findByName('codenarc')
-    establishCodenarcVersion(extension)
     establishCodenarcConfig(extension, config)
   }
 
   /**
    * Calls all extensions' configuration methods. <br/>
    * fillAllExtensions(config) = fillExtensionConfigs(config) + fillExtensionFileTree(config) +
-   * establishCheckstyleVersion() + establishCodenarcSettings(config)
+   * establishCodenarcSettings(config)
    */
   void fillAllExtensions(final ProjectStyleCheckerExtension config) {
     fillExtensionConfigs(config)
     fillExtensionFileTree(config)
-    establishCheckstyleVersion()
     establishCodenarcSettings(config)
   }
 

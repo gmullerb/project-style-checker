@@ -22,7 +22,7 @@ repositories {
 dependencies {
   implementation gradleApi()
   implementation 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
-  implementation 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:1.0.2'
+  implementation 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:2.+'
   testImplementation 'all.shared.gradle:spy-project-factory:+'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:+'
   testRuntime 'org.junit.jupiter:junit-jupiter-engine:+'
@@ -66,6 +66,10 @@ task assess {
 
 // Task settings
 ////////////////
+
+codenarcTest {
+  mustRunAfter = ['compileTestGroovy']
+}
 
 check {
   dependsOn += ['assess']

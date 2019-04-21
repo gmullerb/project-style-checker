@@ -6,6 +6,7 @@ import all.shared.gradle.file.FileListerExtension
 import all.shared.gradle.file.FileListerPlugin
 import all.shared.gradle.quality.code.assess.common.CreateAssessCommonAction
 import all.shared.gradle.quality.code.assess.gradle.CreateAssessGradleAction
+import all.shared.gradle.quality.code.config.BackCodeStyleConfig
 import all.shared.gradle.quality.code.config.CommonCodeStyleConfig
 import all.shared.gradle.testfixtures.SpyProjectFactory
 
@@ -90,13 +91,11 @@ class ProjectStyleCheckerTest {
 
   @Test
   void shouldFillExtensionConfigs() {
-    final BaseStyleConfigWrapperExtension mockBackStyleConfig = mock(BaseStyleConfigWrapperExtension)
     final TextResource mockCodenarcConfig = mock(TextResource)
     final TextResource mockCheckstyleConfig = mock(TextResource)
-    final CommonCodeStyleConfig mockCommonConfig = new CommonCodeStyleConfig(mockCheckstyleConfig, mockCodenarcConfig)
-    final java.lang.reflect.Field injectField = BaseStyleConfigWrapperExtension.getDeclaredField('common')
-    injectField.setAccessible(true)
-    injectField.set(mockBackStyleConfig, mockCommonConfig)
+    final CommonCodeStyleConfig commonConfig = new CommonCodeStyleConfig(mockCheckstyleConfig)
+    final BackCodeStyleConfig backConfig = new BackCodeStyleConfig(null, null, null, mockCodenarcConfig)
+    final BaseStyleConfigWrapperExtension mockBackStyleConfig = new BaseStyleConfigWrapperExtension(commonConfig, backConfig, null)
     spyProject.extensions.add(BaseStyleConfigWrapperPlugin.EXTENSION_NAME, mockBackStyleConfig)
     final ProjectStyleCheckerExtension config = new ProjectStyleCheckerExtension()
 
@@ -138,56 +137,16 @@ class ProjectStyleCheckerTest {
   }
 
   @Test
-  void shouldEstablishCheckstyleVersion() {
-    spyProject.extensions.add(ProjectStyleChecker.CHECKSTYLE_VERSION_PROPERTY, '1.0')
-    final CheckstyleExtension extension = new CheckstyleExtension(spyProject)
-    spyProject.extensions.add('checkstyle', extension)
-
-    projectStyleChecker.establishCheckstyleVersion()
-
-    assertEquals('1.0', extension.toolVersion)
-    verify(spyProject.logger)
-      .debug(eq('Set checkstyle to {} version'), eq('1.0'))
-  }
-
-  @Test
-  void shouldNotEstablishCheckstyleVersion() {
-    projectStyleChecker.establishCheckstyleVersion()
-
-    verify(spyProject.logger, never())
-      .debug(anyString(), anyString())
-  }
-
-  @Test
   void shouldEstablishCodenarcSettings() {
     final TextResource mockCodenarcConfig = mock(TextResource)
     final ProjectStyleCheckerExtension config = new ProjectStyleCheckerExtension()
     config.gradle.config = mockCodenarcConfig
-    spyProject.extensions.add(ProjectStyleChecker.CODENARC_VERSION_PROPERTY, '1.0')
-    final CodeNarcExtension extension = new CodeNarcExtension(spyProject)
-    spyProject.extensions.add('codenarc', extension)
-
-    projectStyleChecker.establishCodenarcSettings(config)
-
-    assertEquals('1.0', extension.toolVersion)
-    assertEquals(mockCodenarcConfig, extension.config)
-    verify(spyProject.logger)
-      .debug(eq('Set codenarc to {} version'), eq('1.0'))
-  }
-
-  @Test
-  void shouldNotEstablishCodenarcVersion() {
-    final TextResource mockCodenarcConfig = mock(TextResource)
-    final ProjectStyleCheckerExtension config = new ProjectStyleCheckerExtension()
-    config.gradle.config = mockCodenarcConfig
     final CodeNarcExtension extension = new CodeNarcExtension(spyProject)
     spyProject.extensions.add('codenarc', extension)
 
     projectStyleChecker.establishCodenarcSettings(config)
 
     assertEquals(mockCodenarcConfig, extension.config)
-    verify(spyProject.logger, never())
-      .debug(anyString(), anyString())
   }
 
   @Test
@@ -202,9 +161,6 @@ class ProjectStyleCheckerTest {
       .fillExtensionFileTree(any(ProjectStyleCheckerExtension))
     doNothing()
       .when(spyProjectStyleChecker)
-      .establishCheckstyleVersion()
-    doNothing()
-      .when(spyProjectStyleChecker)
       .establishCodenarcSettings(any(ProjectStyleCheckerExtension))
 
     spyProjectStyleChecker.fillAllExtensions(new ProjectStyleCheckerExtension())
@@ -213,8 +169,6 @@ class ProjectStyleCheckerTest {
       .fillExtensionConfigs(any(ProjectStyleCheckerExtension))
     order.verify(spyProjectStyleChecker)
       .fillExtensionFileTree(any(ProjectStyleCheckerExtension))
-    order.verify(spyProjectStyleChecker)
-      .establishCheckstyleVersion()
     order.verify(spyProjectStyleChecker)
       .establishCodenarcSettings(any(ProjectStyleCheckerExtension))
   }
