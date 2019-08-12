@@ -17,7 +17,7 @@ __________________
 
 ```gradle
  plugins {
-   id 'all.shared.gradle.project-style-checker' version '1.0.4'
+   id 'all.shared.gradle.project-style-checker' version '1.0.5'
  }
 ```
 
@@ -81,7 +81,7 @@ __________________
 
 ```gradle
  plugins {
-   id 'all.shared.gradle.project-style-checker' version '1.0.4'
+   id 'all.shared.gradle.project-style-checker' version '1.0.5'
  }
 ```
 

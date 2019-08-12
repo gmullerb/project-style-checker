@@ -1,5 +1,10 @@
 # Project Style Checker Change Log
 
+## 1.0.5 - August 2019
+
+* Updates to work with [Base Style Configuration Wrapper plugin](https://github.com/gmullerb/base-style-config-wrapper) version 3.+.
+* Updates README file.
+
 ## 1.0.4 - April 2019
 
 * Removes code quality tools version autoconfiguration, now is done by [Base Style Configuration Wrapper plugin](https://github.com/gmullerb/base-style-config-wrapper).

@@ -8,7 +8,7 @@ repositories {
 
 dependencies {
   compile 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
-  compile 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:+'
+  compile 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:3.+'
 }
 
 sourceSets {

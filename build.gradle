@@ -22,7 +22,7 @@ repositories {
 dependencies {
   implementation gradleApi()
   implementation 'gradle.plugin.all.shared.gradle.file-lister:file-lister:+'
-  implementation 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:2.+'
+  implementation 'gradle.plugin.all.shared.gradle.base-style-config-wrapper:base-style-config-wrapper:3.+'
   testImplementation 'all.shared.gradle:spy-project-factory:+'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:+'
   testRuntime 'org.junit.jupiter:junit-jupiter-engine:+'
@@ -37,9 +37,12 @@ pluginBundle {
   website = PLUGIN_SITE
   vcsUrl = PLUGIN_SITE
   description = 'A small set of tasks for checking file style for all files and for checking code style of Gradle\'s code'
-  tags = ['base-style-config', 'base-style-config-wrapper', 'file style', 'code style', 'coding style', 'coding standards',
-    'best practices', 'checkstyle', 'codenarc', 'groovy', 'gradle code', 'build code', 'tabulation checking', 'end of file checking',
-    'tab character']
+  tags = ['base-style-config', 'base-style-config-wrapper', 'code style', 'coding style', 'coding standards', 'best practices',
+    'checkstyle', 'pmd', 'codenarc', 'eslint', 'typescript-eslint', 'tslint', 'java', 'javascript', 'groovy', 'gradle code',
+    'backend code', 'frontend code', 'java code', 'groovy code', 'javascript code', 'js code', 'typescript code', 'ts code',
+    'build code', 'gradle code', 'java', 'groovy', 'javascript', 'js', 'typescript', 'ts', 'gradle',
+    'java style', 'groovy style', 'javascript style', 'js style', 'typescript style', 'ts style', 'gradle style',
+    'tabulation checking', 'end of file checking', 'tab character']
   plugins {
     thePlugin {
       id = project.hasProperty('PLUGIN_ID')

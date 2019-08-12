@@ -83,7 +83,7 @@ class ProjectStyleChecker {
     final BaseStyleConfigWrapperExtension baseStyleConfig = (BaseStyleConfigWrapperExtension) project.extensions
       .findByName(BaseStyleConfigWrapperPlugin.EXTENSION_NAME)
     config.common.config = baseStyleConfig.common.checkstyleConfig
-    config.gradle.config = baseStyleConfig.back.codenarcConfig
+    config.gradle.config = baseStyleConfig.groovy.codenarcConfig
     project.logger.debug('project-style-check extension filled with {}', BaseStyleConfigWrapperPlugin.EXTENSION_NAME)
   }
 

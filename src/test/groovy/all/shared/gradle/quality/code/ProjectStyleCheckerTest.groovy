@@ -6,7 +6,7 @@ import all.shared.gradle.file.FileListerExtension
 import all.shared.gradle.file.FileListerPlugin
 import all.shared.gradle.quality.code.assess.common.CreateAssessCommonAction
 import all.shared.gradle.quality.code.assess.gradle.CreateAssessGradleAction
-import all.shared.gradle.quality.code.config.BackCodeStyleConfig
+import all.shared.gradle.quality.code.config.GroovyCodeStyleConfig
 import all.shared.gradle.quality.code.config.CommonCodeStyleConfig
 import all.shared.gradle.testfixtures.SpyProjectFactory
 
@@ -94,8 +94,8 @@ class ProjectStyleCheckerTest {
     final TextResource mockCodenarcConfig = mock(TextResource)
     final TextResource mockCheckstyleConfig = mock(TextResource)
     final CommonCodeStyleConfig commonConfig = new CommonCodeStyleConfig(mockCheckstyleConfig)
-    final BackCodeStyleConfig backConfig = new BackCodeStyleConfig(null, null, null, mockCodenarcConfig)
-    final BaseStyleConfigWrapperExtension mockBackStyleConfig = new BaseStyleConfigWrapperExtension(commonConfig, backConfig, null)
+    final GroovyCodeStyleConfig groovyConfig = new GroovyCodeStyleConfig(mockCodenarcConfig)
+    final BaseStyleConfigWrapperExtension mockBackStyleConfig = new BaseStyleConfigWrapperExtension(commonConfig, null, groovyConfig, null)
     spyProject.extensions.add(BaseStyleConfigWrapperPlugin.EXTENSION_NAME, mockBackStyleConfig)
     final ProjectStyleCheckerExtension config = new ProjectStyleCheckerExtension()
 
