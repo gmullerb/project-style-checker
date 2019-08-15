@@ -1,5 +1,9 @@
 # Project Style Checker Change Log
 
+## 1.0.6 - August 2019
+
+* Sets Compatibility with Java version 8 or higher.
+
 ## 1.0.5 - August 2019
 
 * Updates to work with [Base Style Configuration Wrapper plugin](https://github.com/gmullerb/base-style-config-wrapper) version 3.+.
